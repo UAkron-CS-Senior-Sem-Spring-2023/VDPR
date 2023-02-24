@@ -6,5 +6,11 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "80:5000"
+  react:
+    build:
+      context: ./VDPR-React/vdpr
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
   redis:
     image: "redis:alpine"
