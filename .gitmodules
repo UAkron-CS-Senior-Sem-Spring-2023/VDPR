@@ -1,6 +1,0 @@
-[submodule "VDPR-Parser"]
-	path = VDPR-Parser
-	url = https://github.com/UAkron-CS-Senior-Sem-Spring-2023/Transcript-Parser
-[submodule "VDPR-React"]
-	path = VDPR-React
-	url = https://github.com/UAkron-CS-Senior-Sem-Spring-2023/VDPR-React
