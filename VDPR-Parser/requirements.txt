@@ -1,0 +1,5 @@
+PyPDF2
+PyCryptodome
+Flask
+flask_cors
+redis
