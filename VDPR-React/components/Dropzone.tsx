@@ -3,7 +3,6 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { Flex, Button, useColorMode } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 
 interface DropzoneProps {
   loading: boolean;
@@ -18,7 +17,6 @@ export default function Dropzone({
   setError,
 }: DropzoneProps) {
   const { colorMode } = useColorMode();
-  const navigate = useNavigate();
   const onDrop = useCallback(
     (acceptedFiles: (string | Blob)[]) => {
       let formData = new FormData();
@@ -35,22 +33,6 @@ export default function Dropzone({
           unstable_batchedUpdates(async () => {
             setTaskId(res.data.task_id);
             setLoading(true);
-
-            // Sleeps for 1 second for dramatic effect.
-            const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-            console.log('1');
-            // Sleeps for 2 seconds.
-            await sleep(1000);
-            console.log('2');
-            console.log(JSON.stringify(res.data, null, 2))
-            // change the route to the results page
-            //navigate("/results");
-            navigate("/results", {
-              state: {
-                result: JSON.stringify(res.data, null, 2),
-              }
-            });
-
           });
         })
         .catch((err) => {
