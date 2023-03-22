@@ -15,13 +15,19 @@ cache = redis.Redis(host='redis', port=6379)
 from pathlib import Path
 
 @app.route('/parse', methods=['POST'])
-def runExample():
+def parsePDF():
 	parser = PDFParser.PDFParser()
 	pdfData = request.files.get('uploadfile')
 	if pdfData == None:
 		parser.parseInfo("jacobDPR.pdf")
-		return parser.student.toJSON()
+		return "file upload failure"
 	else:
 		pdfData.save("uploadedPDF.pdf")
 		parser.parseInfo("uploadedPDF.pdf")
-		return parser.student.toJSON()
+		return "upload successful"
+
+@app.route('/requirements', methods=['GET'])
+def getRequirements():
+	parser = PDFParser.PDFParser()
+	parser.parseInfo("jacobDPR.pdf")
+	return parser.student.toJSON()

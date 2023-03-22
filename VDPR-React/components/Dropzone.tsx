@@ -3,6 +3,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { Flex, Button, useColorMode } from "@chakra-ui/react";
+import { useRouter } from 'next/router'
 
 interface DropzoneProps {
   loading: boolean;
@@ -17,12 +18,13 @@ export default function Dropzone({
   setError,
 }: DropzoneProps) {
   const { colorMode } = useColorMode();
+  const router = useRouter();
   const onDrop = useCallback(
     (acceptedFiles: (string | Blob)[]) => {
       let formData = new FormData();
       formData.append("uploadfile", acceptedFiles[0]);
       axios({
-        // method: "GET",
+        // method should be "POST",
         method: "POST",
         // url: process.env.NEXT_PUBLIC_HEROKU_PARSE_URL,
         url: "http://localhost:3000/parse",
@@ -33,6 +35,11 @@ export default function Dropzone({
           unstable_batchedUpdates(async () => {
             setTaskId(res.data.task_id);
             setLoading(true);
+
+            router.push({
+              pathname: "/results",
+              query: { results: JSON.stringify(res.data) },
+          }, '/results')
           });
         })
         .catch((err) => {

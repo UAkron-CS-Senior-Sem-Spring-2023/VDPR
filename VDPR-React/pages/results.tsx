@@ -9,17 +9,16 @@ import { useRouter } from 'next/router'
 
  export const Results = () => {
   const router = useRouter();
+  const queryKey = 'results';
+  const queryValue = router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))
   return (
-  <Box textAlign="center" fontSize="xl">
-    <Grid minH="25vh" p={3}>
-
+  <Box textAlign="center" fontSize="xl" mb={20}>
       <VStack spacing={3}>
         <Heading>
           Transcript Results
         </Heading>
-        <Text>{router.query.results}</Text>
+        <Text>{queryValue}</Text>
       </VStack>
-    </Grid>
   </Box>
   )
 };

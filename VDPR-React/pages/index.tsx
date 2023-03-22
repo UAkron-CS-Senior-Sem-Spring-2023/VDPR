@@ -17,7 +17,7 @@ const FileUpload = () => {
         // this method should be get because we will use it to fetch the file every 5 seconds until the file is ready
         method: "GET",
         // url: `${process.env.NEXT_PUBLIC_HEROKU_TASKS_URL}/${taskId}`,
-        url: `http://localhost:3000/parse`,
+        url: `http://localhost:3000/requirements`,
       });
       console.log(res);
 
@@ -30,7 +30,7 @@ const FileUpload = () => {
         setLoading(false);
         router.push({
             pathname: "/results",
-            query: { results: res.data },
+            query: { results: JSON.stringify(res.data) },
         }, '/results')
       }
     } catch (err) {
