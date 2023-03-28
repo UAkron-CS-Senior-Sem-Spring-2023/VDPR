@@ -3,7 +3,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { Flex, Button, useColorMode } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from 'next/router'
 
 interface DropzoneProps {
   loading: boolean;
@@ -18,13 +18,13 @@ export default function Dropzone({
   setError,
 }: DropzoneProps) {
   const { colorMode } = useColorMode();
-  const navigate = useNavigate();
+  const router = useRouter();
   const onDrop = useCallback(
     (acceptedFiles: (string | Blob)[]) => {
       let formData = new FormData();
       formData.append("uploadfile", acceptedFiles[0]);
       axios({
-        // method: "GET",
+        // method should be "POST",
         method: "POST",
         // url: process.env.NEXT_PUBLIC_HEROKU_PARSE_URL,
         url: "http://localhost:3000/parse",
@@ -36,21 +36,10 @@ export default function Dropzone({
             setTaskId(res.data.task_id);
             setLoading(true);
 
-            // Sleeps for 1 second for dramatic effect.
-            const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-            console.log('1');
-            // Sleeps for 2 seconds.
-            await sleep(1000);
-            console.log('2');
-            console.log(JSON.stringify(res.data, null, 2))
-            // change the route to the results page
-            //navigate("/results");
-            navigate("/results", {
-              state: {
-                result: JSON.stringify(res.data, null, 2),
-              }
-            });
-
+            router.push({
+              pathname: "/results",
+              query: { results: JSON.stringify(res.data) },
+          }, '/results')
           });
         })
         .catch((err) => {

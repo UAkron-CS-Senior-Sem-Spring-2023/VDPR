@@ -10,9 +10,9 @@ services:
     - "host.docker.internal:host-gateway"
   react:
     build:
-      context: ./VDPR-React/vdpr
+      context: ./VDPR-React
       dockerfile: ./Dockerfile
     ports:
-      - "80:3000"
+      - "8080:3000"
   redis:
     image: "redis:alpine"

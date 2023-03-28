@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Box, Button, Heading, Text } from "@chakra-ui/react";
 import axios from "axios";
 
-import Dropzone from "./FileControl";
-import ErrorAlert from "./ErrorAlert";
+import Dropzone from "../components/Dropzone";
+import ErrorAlert from "../components/ErrorAlert";
+import router from "next/router";
 
 const FileUpload = () => {
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -14,10 +15,9 @@ const FileUpload = () => {
     try {
       const res = await axios({
         // this method should be get because we will use it to fetch the file every 5 seconds until the file is ready
-        //method: "GET",
         method: "GET",
         // url: `${process.env.NEXT_PUBLIC_HEROKU_TASKS_URL}/${taskId}`,
-        url: `http://localhost:3000/parse`,
+        url: `http://localhost:3000/requirements`,
       });
       console.log(res);
 
@@ -28,6 +28,10 @@ const FileUpload = () => {
         }, 5000);
       } else {
         setLoading(false);
+        router.push({
+            pathname: "/results",
+            query: { results: JSON.stringify(res.data) },
+        }, '/results')
       }
     } catch (err) {
       setTaskId(null);
@@ -48,7 +52,7 @@ const FileUpload = () => {
       <Box mb={8}>
         <Box flexDirection="row" mb={2}>
           <Heading mr={2} fontSize="2xl" display="inline-block">
-            You'll need your transcript to get started:{" "}
+            You will need your transcript to get started:{" "}
             <Button colorScheme={"teal"}>
               Learn How
             </Button>
