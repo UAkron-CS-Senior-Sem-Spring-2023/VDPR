@@ -8,13 +8,13 @@ export default function Footer() {
         {new Date().getFullYear()} -{" "}
         <Link href="https://github.com/jakethesnake0619" isExternal>
           jakethesnake0619
-        </Link>{" "}
+        </Link>{", "}
         <Link href="https://github.com/nathanhulet" isExternal>
           nathanhulet
-        </Link>{" "}
+        </Link>{", "}
         <Link href="https://github.com/T-pin" isExternal>
           T-pin
-        </Link>{" "}
+        </Link>{", "}
         <Link href="https://github.com/JGoodin-01" isExternal>
           JGoodin-01
         </Link>
