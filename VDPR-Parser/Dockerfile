@@ -1,5 +1,5 @@
 FROM python:3.7-alpine
-WORKDIR /Transcript-Parser
+WORKDIR /VDPR-Parser
 ENV FLASK_APP=parserEndpoint.py
 ENV FLASK_RUN_HOST=0.0.0.0
 RUN apk add --no-cache gcc musl-dev linux-headers
