@@ -3,6 +3,7 @@ import {
   Box,
   Heading,
   VStack,
+  Divider,
   Button,
   Icon,
 } from "@chakra-ui/react"
@@ -81,8 +82,7 @@ interface ResultCard {
             />
           ))}
         </Carousel>
-        {/* line break */}
-        <Text> </Text>
+        <Divider />
         {/* Subtiles should render here */}
         {/* the subTiles shown should only be those of the selected tile */}
         {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
