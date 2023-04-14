@@ -47,7 +47,7 @@ interface ResultCard {
   }, []);
 
   const isMobile = width <= 768;
-  const show = isMobile ? 1.2 : 2.2;
+  const show = isMobile ? 1.2 : 2.8;
   const slide = isMobile ? 1 : 2;
   const rArrow = isMobile ? null : RightArrow;
   const lArrow = isMobile ? null : LeftArrow;

@@ -49,7 +49,7 @@ const FileUpload = () => {
   }, [taskId, getStatus]);
 
   return (
-    <Box mb={8} w="full">
+    <Box m="0 auto" maxW={700} transition="0.5s ease-out">
       <Box mb={8}>
         <Box flexDirection="row" mb={2}>
           <Heading mr={2} fontSize="2xl" display="inline-block">

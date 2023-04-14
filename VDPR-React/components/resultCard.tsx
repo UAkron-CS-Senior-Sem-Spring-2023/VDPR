@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Card, 
   CardBody, 
@@ -11,6 +11,11 @@ import {
 } from "@chakra-ui/react";
 import SubtileCard from "./SubtileCard";
 
+interface Subtile {
+  title: string;
+  description: string;
+}
+
 interface ResultCardProps {
   title: string;
   description: string;
@@ -21,14 +26,42 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
   const [showSubtitles, setShowSubtitles] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
 
-  const toggleCard = () => {
-    // Clear selection of any other cards
+  useEffect(() => {
+    // Get all the cards
     const cards = Array.from(document.getElementsByClassName('result-card'));
-    cards.forEach((card) => card.classList.remove('selected'));
-  
-    // Set this card as selected
+
+    // Remove the 'selected' class from all the cards except the current one
+    cards.forEach((card) => {
+      if (card !== selectedCardRef.current) {
+        // if card was selected, remove the 'selected' class
+        if (card.classList.contains('selected')) {
+          card.classList.remove('selected');
+        }
+        (card.firstChild as HTMLElement).style.border = '1px solid #e2e8f0';
+      }
+    });
+
+    // get the card clicked
+    const card = selectedCardRef.current;
+    // add the border to the card
+    (card?.firstChild as HTMLElement).style.border = '2px solid #3182ce';
+    // add the 'selected' class to the card
+    card?.classList.add('selected');
+
+    // Add the 'selected' class to the current card
+    if (isSelected) {
+      selectedCardRef.current?.classList.add('selected');
+    } else {
+      selectedCardRef.current?.classList.remove('selected');
+    }
+  }, [isSelected]);
+
+  const selectedCardRef = React.useRef<HTMLDivElement | null>(null);
+
+  const toggleCard = () => {
+    // Deselect any previously selected card
+    setIsSelected(!isSelected);
     setShowSubtitles(!showSubtitles);
-    setIsSelected(true);
   };
 
   let progressValue = 60;
@@ -47,7 +80,7 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
   }
 
   return (
-    <div onClick={toggleCard} className="result-card">
+    <div onClick={toggleCard} className="result-card" ref={selectedCardRef}>
       <Card
         border={isSelected ? '2px' : '1px'} 
         borderColor={isSelected ? 'blue.400' : 'gray.200'}
@@ -55,7 +88,6 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
         width={240} 
         mr={10} 
         ml={10}
-        className={isSelected ? 'selected' : ''}
       >
         <CardBody>
           <Heading fontSize='22px'>{title}</Heading>
@@ -76,12 +108,10 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
               ))}
             </div>
           )}
-          {/* <Button>See More</Button> */}
         </CardBody>
       </Card>
     </div>
-  )
+  );
 };
-
 
 export default ResultCard;
