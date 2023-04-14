@@ -11,6 +11,7 @@ import ResultCard from "../components/resultCard";
 import { Carousel } from '@trendyol-js/react-carousel';
 import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import { useEffect, useState } from "react";
+import SubtileCard from "@/components/SubtileCard";
 
 // right arrow react element
 let RightArrow = (
@@ -76,10 +77,27 @@ interface ResultCard {
               key={`tile-${index}`}
               title={tile.name}
               description={tile.otherRequirements}
-              subtiles={tile.subtiles}
+              subtiles={tile.subTiles}
             />
           ))}
         </Carousel>
+        {/* line break */}
+        <Text> </Text>
+        {/* Subtiles should render here */}
+        {/* the subTiles shown should only be those of the selected tile */}
+        {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
+          <Box key={`subtile-${index}`} width={"full"}>
+            {tile.subTiles && tile.subTiles.map((subtile: Subtile, index: number) => (
+              <SubtileCard
+                key={`subtile-${index}`}
+                parent={tile.name}
+                name={subtile.name}
+                description={subtile.otherRequirements}
+                satisfied={subtile.satisfied}
+              />
+            ))}
+          </Box>
+        ))}
       </VStack>
   </Box>
   )

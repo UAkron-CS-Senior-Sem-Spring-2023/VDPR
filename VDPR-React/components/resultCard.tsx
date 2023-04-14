@@ -23,17 +23,21 @@ interface ResultCardProps {
 }
 
 export const ResultCard = ({ title, description, subtiles }: ResultCardProps) => {
-  const [showSubtitles, setShowSubtitles] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+  const selectedCardRef = React.useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    // Get all the cards
+  const toggleCard = () => {
     const cards = Array.from(document.getElementsByClassName('result-card'));
+
+    // if card clicked is already selected, remove the 'selected' class and border
+    if (selectedCardRef.current?.classList.contains('selected')) {
+      selectedCardRef.current?.classList.remove('selected');
+      (selectedCardRef.current?.firstChild as HTMLElement).style.border = '1px solid #e2e8f0';
+      return;
+    }
 
     // Remove the 'selected' class from all the cards except the current one
     cards.forEach((card) => {
       if (card !== selectedCardRef.current) {
-        // if card was selected, remove the 'selected' class
         if (card.classList.contains('selected')) {
           card.classList.remove('selected');
         }
@@ -41,27 +45,12 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
       }
     });
 
-    // get the card clicked
     const card = selectedCardRef.current;
-    // add the border to the card
     (card?.firstChild as HTMLElement).style.border = '2px solid #3182ce';
-    // add the 'selected' class to the card
     card?.classList.add('selected');
-
-    // Add the 'selected' class to the current card
-    if (isSelected) {
-      selectedCardRef.current?.classList.add('selected');
-    } else {
-      selectedCardRef.current?.classList.remove('selected');
-    }
-  }, [isSelected]);
-
-  const selectedCardRef = React.useRef<HTMLDivElement | null>(null);
-
-  const toggleCard = () => {
-    // Deselect any previously selected card
-    setIsSelected(!isSelected);
-    setShowSubtitles(!showSubtitles);
+    selectedCardRef.current?.classList.add('selected');
+    // log the selected card's subtile array
+    console.log('subtiles:', subtiles);
   };
 
   let progressValue = 60;
@@ -82,12 +71,10 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
   return (
     <div onClick={toggleCard} className="result-card" ref={selectedCardRef}>
       <Card
-        border={isSelected ? '2px' : '1px'} 
-        borderColor={isSelected ? 'blue.400' : 'gray.200'}
+        border={'1px'} 
+        borderColor={'gray.200'}
         borderRadius={7} 
-        width={240} 
-        mr={10} 
-        ml={10}
+        width={240}
       >
         <CardBody>
           <Heading fontSize='22px'>{title}</Heading>
@@ -97,16 +84,6 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
             <CircularProgress mt={3} value={progressValue} thickness='7px' color='green.400' size='120px'>
               <CircularProgressLabel>{progressValue}%</CircularProgressLabel>
             </CircularProgress>
-          )}
-          {showSubtitles && subtiles && (
-            <div>
-              {subtiles.map((subtile) => (
-                <SubtileCard
-                  title={subtile.title}
-                  description={subtile.description}
-                />
-              ))}
-            </div>
           )}
         </CardBody>
       </Card>
