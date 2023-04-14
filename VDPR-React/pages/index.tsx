@@ -28,6 +28,7 @@ const FileUpload = () => {
         }, 5000);
       } else {
         setLoading(false);
+        console.log(res.data)
         router.push({
             pathname: "/results",
             query: { results: JSON.stringify(res.data) },

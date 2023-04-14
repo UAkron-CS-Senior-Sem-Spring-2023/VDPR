@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
   Card, 
   CardBody, 
@@ -9,21 +9,44 @@ import {
   CircularProgress,
   CircularProgressLabel
 } from "@chakra-ui/react";
+import SubtileCard from "./SubtileCard";
 
-export const ResultCard = (ResultCard: { credits: string | number; totalCredits: string | number; classes: string | number; totalClasses: string | number}) => {
-  const percentage = Math.floor((Number(ResultCard.credits) / Number(ResultCard.totalCredits)) * 100);
+interface ResultCardProps {
+  title: string;
+  description: string;
+  subtiles?: Subtile[];
+}
+
+export const ResultCard = ({ title, description, subtiles }: ResultCardProps) => {
+  const [showSubtitles, setShowSubtitles] = useState(false);
+
+  const toggleSubtitles = () => {
+    setShowSubtitles(!showSubtitles);
+  };
+
   return (
-    <Card border='1px' borderRadius={7} width={230}>
+    <div onClick={toggleSubtitles}>
+    <Card border='1px' borderRadius={7} width={240} mr={10} ml={10}>
     <CardBody>
-      <Heading size='md'>Core Requirements</Heading>
-      <CircularProgress mt={3} value={percentage} thickness='7px' color='green.400' size='120px'>
-        <CircularProgressLabel>{percentage}%</CircularProgressLabel>
+      <Heading fontSize='20px'>{title}</Heading>
+      <Text fontSize='13px'>{description}</Text>
+      <CircularProgress mt={3} value={60} thickness='7px' color='green.400' size='120px'>
+        <CircularProgressLabel>{60}%</CircularProgressLabel>
       </CircularProgress>
-      <Text mt={6}>Credits: {ResultCard.credits}/{ResultCard.totalCredits}</Text>
-      <Text>Classes: {ResultCard.classes}/{ResultCard.totalClasses}</Text>
+      {showSubtitles && subtiles && (
+        <div>
+          {subtiles.map((subtile) => (
+            <SubtileCard
+              title={subtile.title}
+              description={subtile.description}
+            />
+          ))}
+        </div>
+      )}
       <Button>See More</Button>
     </CardBody>
   </Card>
+  </div>
   )
 };
 

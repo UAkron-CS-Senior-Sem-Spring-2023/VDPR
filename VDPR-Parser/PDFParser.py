@@ -2,6 +2,7 @@ import Course
 import Student
 import Tile
 import SubTile
+import json
 
 from PyPDF2 import PdfReader
 
@@ -188,6 +189,9 @@ class PDFParser:
 		for word in range(len(line)):
 			if (value in line[word]):
 				return True
+			
+	def toJSON(self):
+		return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 #for testing
 def main():

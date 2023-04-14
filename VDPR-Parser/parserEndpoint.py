@@ -3,6 +3,7 @@ import Student
 import PDFParser
 import os, base64
 import time
+import json
 
 import redis
 from flask_cors import CORS
@@ -23,11 +24,11 @@ def parsePDF():
 		return "file upload failure"
 	else:
 		pdfData.save("uploadedPDF.pdf")
-		parser.parseInfo("uploadedPDF.pdf")
-		return "upload successful"
+		parser.parseInfo("jacobDPR.pdf")
+		return parser.toJSON()
 
 @app.route('/requirements', methods=['GET'])
 def getRequirements():
 	parser = PDFParser.PDFParser()
 	parser.parseInfo("jacobDPR.pdf")
-	return parser.student.toJSON()
+	return parser.toJSON()
