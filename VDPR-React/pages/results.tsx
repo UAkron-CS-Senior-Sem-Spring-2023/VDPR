@@ -91,9 +91,7 @@ interface ResultCard {
               <SubtileCard
                 key={`subtile-${index}`}
                 parent={tile.name}
-                name={subtile.name}
-                description={subtile.otherRequirements}
-                satisfied={subtile.satisfied}
+                tile={subtile}
               />
             ))}
           </Box>

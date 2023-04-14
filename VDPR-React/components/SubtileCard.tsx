@@ -16,7 +16,19 @@ interface SubtileProps {
   description: string;
 }
 
-function SubtileCard({ parent, satisfied, name, description }: SubtileProps) {
+function SubtileCard({ parent, tile}: SubtileProps) {
+  let name = tile.name;
+  let description = tile.otherRequirements;
+  let satisfied = tile.satisfied;
+  const coursesNeeded = tile.coursesNeeded;
+  const coursesTaken = tile.coursesTaken;
+  const creditsNeeded = tile.creditsNeeded;
+  const creditsTaken = tile.creditsTaken;
+  let showEndSection = true;
+  if (creditsNeeded === -1 && coursesNeeded === -1) {
+    showEndSection = false;
+  }
+
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
@@ -40,22 +52,32 @@ function SubtileCard({ parent, satisfied, name, description }: SubtileProps) {
   if (name && name.includes('(')) {
     name = name.substring(0, name.indexOf('('));
   }
+  // some of the descriptions contain "Page x of y" at the end which is not needed.
+  if (description && description.includes('Page')) {
+    description = description.substring(0, description.indexOf('Page'));
+  }
 
   if (!isMobile) {
     return (
-      <Card width={"full"}  m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={"white"}>
+      <Card width={"full"} m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={"white"}>
         <HStack spacing={0} alignItems={"stretch-vertically"}>
           {showComplete && (
-          <Box backgroundColor={satisfiedColor} borderLeftRadius={10} p={1} textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"column"}>
-            <Heading size="md" color={"gray.700"}> {satisfiedIcon} </Heading>
-          </Box>
+            <Box backgroundColor={satisfiedColor} borderLeftRadius={10} p={1} textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"column"}>
+              <Heading size="md" color={"gray.700"}> {satisfiedIcon} </Heading>
+            </Box>
           )}
-          <Box w={"20%"} backgroundColor={"gray.200"} p={2} borderLeftRadius={10}>
+          <Box w={"20%"} backgroundColor={"gray.200"} p={2} textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"column"}>
             <Heading size="md" color={"gray.700"}> {name} </Heading>
           </Box>
-          <Box>
+          <Box flex={1}>
             <Text color={"gray.700"}> {description} </Text>
           </Box>
+          {showEndSection && (
+          <Box w={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"column"}>
+            {creditsNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Credits: {creditsTaken}/{creditsNeeded} </Heading>)}
+            {coursesNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Courses: {coursesTaken}/{coursesNeeded} </Heading>)}
+          </Box>
+          )}
         </HStack>
       </Card>
     );
@@ -68,7 +90,7 @@ function SubtileCard({ parent, satisfied, name, description }: SubtileProps) {
             <Heading size="md" color={"gray.700"}> {satisfiedIcon} </Heading>
           </Box>
           )}
-          <Box h={"20%"} backgroundColor={"gray.200"} p={2} borderTopRadius={10}>
+          <Box h={"20%"} backgroundColor={"gray.200"} p={2}>
             <Heading size="md" color={"gray.700"}> {name} </Heading>
           </Box>
           <Box>
