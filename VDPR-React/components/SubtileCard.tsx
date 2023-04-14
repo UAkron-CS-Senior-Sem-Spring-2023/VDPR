@@ -96,6 +96,12 @@ function SubtileCard({ parent, tile}: SubtileProps) {
           <Box>
             <Text color={"gray.700"}> {description} </Text>
           </Box>
+          {showEndSection && (
+          <Box h={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"row"}>
+            {creditsNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Credits: {creditsTaken}/{creditsNeeded} </Heading>)}
+            {coursesNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Courses: {coursesTaken}/{coursesNeeded} </Heading>)}
+          </Box>
+          )}
         </VStack>
       </Card>
     );
