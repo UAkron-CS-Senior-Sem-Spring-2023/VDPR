@@ -53,7 +53,13 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
     console.log('subtiles:', subtiles);
   };
 
-  let progressValue = 60;
+  let progressValue = 0;
+  if (subtiles) {
+    const satisfiedSubtiles = subtiles.filter((subtile) => subtile.satisfied);
+    progressValue = Math.round((satisfiedSubtiles.length / subtiles.length) * 100);
+  }
+
+
   if (title === 'Important Notes to Undergraduates (RG 4235)') {
     title = 'Miscellaneous Status Report';
     description = 'This section includes developmental courses, Incomplete grades, and a list of all courses taken';
@@ -80,6 +86,7 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
           <Heading fontSize='22px'>{title}</Heading>
           <br />
           <Text fontSize='14px'>{description}</Text>
+          {progressValue > 0 && (<Heading fontSize='18px' mt={3}>Requirement Completion:</Heading>)}
           {progressValue > 0 && (
             <CircularProgress mt={3} value={progressValue} thickness='7px' color='green.400' size='120px'>
               <CircularProgressLabel>{progressValue}%</CircularProgressLabel>
