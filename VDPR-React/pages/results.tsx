@@ -10,15 +10,16 @@ import { useRouter } from 'next/router'
 import ResultCard from "../components/resultCard";
 import { Carousel } from '@trendyol-js/react-carousel';
 import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
+import { useEffect, useState } from "react";
 
 // right arrow react element
-const RightArrow = (
+let RightArrow = (
   // use react icons ChevronLeftIcon
   <ChevronRightIcon w={20} h={200} />
 );
 
 // left arrow react element
-const LeftArrow = (
+let LeftArrow = (
   <ChevronLeftIcon w={20} h={200} />
 );
 
@@ -33,6 +34,24 @@ interface ResultCard {
   const queryKey = 'results';
   const apiData = JSON.parse(router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))) || {};
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+
+  const isMobile = width <= 768;
+  const show = isMobile ? 1.2 : 2.2;
+  const slide = isMobile ? 1 : 2;
+  const rArrow = isMobile ? null : RightArrow;
+  const lArrow = isMobile ? null : LeftArrow;
+
   console.log('apiData:', apiData);
   console.log('tiles:', apiData?.tiles);
 
@@ -43,13 +62,13 @@ interface ResultCard {
           Transcript Results
         </Heading>
         <Carousel 
-          show={2.2} 
-          slide={2} 
+          show={show} 
+          slide={slide} 
           transition={0.5} 
           infinite={true} 
           dynamic={true}
-          rightArrow={RightArrow} 
-          leftArrow={LeftArrow}
+          rightArrow={rArrow} 
+          leftArrow={lArrow}
           swiping={true}
         >
         {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
