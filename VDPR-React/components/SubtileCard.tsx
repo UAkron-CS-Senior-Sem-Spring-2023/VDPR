@@ -11,7 +11,7 @@ import {
   Collapse,
   useDisclosure,
 } from "@chakra-ui/react"
-import { CheckIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { CheckIcon, CloseIcon, ChevronDownIcon, TimeIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import DataTable from "./DataTable";
@@ -49,13 +49,29 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
 
   const isMobile = width <= 768;
 
-  const satisfiedColor = satisfied ? "green.300" : "red.400";
-  const satisfiedIcon = satisfied ? <CheckIcon /> : <CloseIcon />;
+  let satisfiedColor = satisfied ? "green.300" : "red.400";
+  let satisfiedIcon = satisfied ? <CheckIcon /> : <CloseIcon />;
   // if parent contains the text 'Important Notes' then remove the text in parentheses
   let showComplete = true;
   if (parent && parent.includes('Important Notes')) {
     showComplete = false;
   }
+  // check the courses for the subtile see if any of them have a grade of 'IP'
+  let hasIP = false;
+  if (courses && courses.length > 0) {
+    for (let i = 0; i < courses.length; i++) {
+      if (courses[i].grade === 'IP') {
+        hasIP = true;
+        break;
+      }
+    }
+  }
+  // if show complete is true and has IP is true then satisfied color is yellow
+  if (showComplete && hasIP && satisfied) {
+    satisfiedColor = "yellow.300";
+    satisfiedIcon = <TimeIcon />;
+  }
+
   if (name && name.includes('(')) {
     name = name.substring(0, name.indexOf('('));
   }
