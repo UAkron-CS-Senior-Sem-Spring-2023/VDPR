@@ -11,7 +11,7 @@ import {
   Collapse,
   useDisclosure,
 } from "@chakra-ui/react"
-import { CheckIcon, CloseIcon, ChevronDownIcon, TimeIcon } from '@chakra-ui/icons'
+import { CheckIcon, CloseIcon, ChevronDownIcon, ChevronUpIcon, TimeIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import DataTable from "./DataTable";
@@ -166,7 +166,8 @@ function SubtileCard({ parent, tile, selected, isMobile }: SubtileProps) {
             </Box>
               {( courses && courses.length > 0 ) && (
               <Button onClick={onToggle} size="lg" bg={bgButtonColor} color="gray.900" _hover={{bg: "gray.300"}} borderBottomRightRadius={"10px"} flex={1} minH="30px" w="100%">
-                <Icon as={ChevronDownIcon} />
+                {!isOpen && (<Icon as={ChevronDownIcon} />)}
+                {isOpen && (<Icon as={ChevronUpIcon} />)}
               </Button>
               )}
           </Box>
@@ -206,7 +207,8 @@ function SubtileCard({ parent, tile, selected, isMobile }: SubtileProps) {
             </Box>
               {( courses && courses.length > 0 ) && (
               <Button onClick={onToggle} size="lg" bg={bgButtonColor} color="gray.900" _hover={{bg: "gray.300"}} borderBottomRightRadius={"10px"} flex={1} minH="30px" w="100%">
-                <Icon as={ChevronDownIcon} />
+                {!isOpen && (<Icon as={ChevronDownIcon} />)}
+                {isOpen && (<Icon as={ChevronUpIcon} />)}
               </Button>
               )}
           </Box>
