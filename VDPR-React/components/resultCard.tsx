@@ -59,7 +59,6 @@ export const ResultCard = ({ title, description, subtiles, handleClick }: Result
     progressValue = Math.round((satisfiedSubtiles.length / subtiles.length) * 100);
   }
 
-
   if (title === 'Important Notes to Undergraduates (RG 4235)') {
     title = 'Miscellaneous Status Report';
     description = 'This section includes developmental courses, Incomplete grades, and a list of all courses taken';
@@ -68,7 +67,6 @@ export const ResultCard = ({ title, description, subtiles, handleClick }: Result
   if (title.includes('General Education')) {
     title = 'General Education Requirements';
     description = "General Education Recommended Core Curriculum: Students pursuing a baccalaureate degree must complete the following requirements. For detailed information, please visit the General Education Program webpage. NOTE: Specific departmental requirements may vary.";
-    // description = 'This section includes the General Education requirements for your major'; <a href="http://www.uakron.edu/general-education/" target="_blank">General Education Program</a>
   }
   if (title.includes('Honors Distribution')) {
     title = 'Honors Distribution Requirements';

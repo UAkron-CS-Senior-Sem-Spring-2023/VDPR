@@ -6,6 +6,10 @@ import json
 
 from PyPDF2 import PdfReader
 
+validGrades = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "I", 
+	       			"IP", "AUD", "CR", "CRX", "NC", "WD", "NGR", "INV", "PI", "R", "TA", "TA-", 
+							"TB+", "TB", "TB-", "TC+", "TC", "TC-", "TD+", "TD", "TD-", "TF", "TI", "TIP", 
+							"TAUD", "TCR", "TCRX", "TNC", "TWD", "TNGR", "TINV", "TPI", "TR"]
 class PDFParser:
 	def __init__(self):
 		self.student = Student.Student()
@@ -58,6 +62,13 @@ class PDFParser:
 			for word in range(length - 7):
 				courseToAdd.title += courseLines[line][4 + word] + " "
 			courseToAdd.title = courseToAdd.title.strip()
+			if (courseToAdd.grade not in validGrades):
+				courseToAdd.title += " " + courseToAdd.grade
+				courseToAdd.grade = "IP"
+			if (courseToAdd.term == "Summe"):
+				courseToAdd.term += "r"
+			elif (courseToAdd.term == "Sprin"):
+				courseToAdd.term += "g"
 			self.student.coursesTaken.append(courseToAdd)
 
 	def getCourseLines(self, lines):
@@ -171,6 +182,13 @@ class PDFParser:
 								for word in range(4, len(lines[line]) - 2):
 									newCourse.title = newCourse.title + " " + lines[line][word]
 									newCourse.title = newCourse.title.strip()
+								if (newCourse.grade not in validGrades):
+									newCourse.title += " " + newCourse.grade
+									newCourse.grade = "IP"
+								if (newCourse.term == "Summe"):
+									newCourse.term += "r"
+								elif (newCourse.term == "Sprin"):
+									newCourse.term += "g"
 								subTile.courses.append(newCourse)
 							line += 1
 						if (self.inLine("(RQ", lines[line]) or self.inLine("(RG", lines[line])):

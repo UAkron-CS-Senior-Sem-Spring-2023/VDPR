@@ -69,17 +69,6 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   const bgHeaderColor = useColorModeValue("gray.200", "gray.200");
   const bgButtonColor = useColorModeValue("gray.200", "gray.200");
 
-// "catalogNum": "221",
-// "courseType": "",
-// "grade": "CR",
-// "subject": "3450",
-// "term": "Summe",
-// "title": "Analytic Geometry-Calculus I",
-// "units": 3,
-// "year": "2019"
-
-// make a data table for courses
-
   interface Course {
     catalogNum: string;
     courseType: string;
@@ -96,7 +85,6 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   const courseData = courses.map((course: any) => {
     return {
       catalogNum: course.catalogNum,
-      courseType: course.courseType,
       grade: course.grade,
       subject: course.subject,
       term: course.term,
@@ -110,10 +98,6 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
     courseHelper.accessor("catalogNum", {
       cell: (info) => info.getValue(),
       header: "Catalog Number"
-    }),
-    courseHelper.accessor("courseType", {
-      cell: (info) => info.getValue(),
-      header: "Course Type"
     }),
     courseHelper.accessor("grade", {
       cell: (info) => info.getValue(),
@@ -145,50 +129,6 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
         isNumeric: true
       }
     }),
-  ];
-
-  type UnitConversion = {
-    fromUnit: string;
-    toUnit: string;
-    factor: number;
-  };
-  
-  const data: UnitConversion[] = [
-    {
-      fromUnit: "inches",
-      toUnit: "millimetres (mm)",
-      factor: 25.4
-    },
-    {
-      fromUnit: "feet",
-      toUnit: "centimetres (cm)",
-      factor: 30.48
-    },
-    {
-      fromUnit: "yards",
-      toUnit: "metres (m)",
-      factor: 0.91444
-    }
-  ];
-  
-  const columnHelper = createColumnHelper<UnitConversion>();
-  
-  const columns = [
-    columnHelper.accessor("fromUnit", {
-      cell: (info) => info.getValue(),
-      header: "To convert"
-    }),
-    columnHelper.accessor("toUnit", {
-      cell: (info) => info.getValue(),
-      header: "Into"
-    }),
-    columnHelper.accessor("factor", {
-      cell: (info) => info.getValue(),
-      header: "Multiply by",
-      meta: {
-        isNumeric: true
-      }
-    })
   ];
 
   const [showData, setShowData] = useState(false);
