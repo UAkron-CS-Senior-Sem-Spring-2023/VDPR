@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react"
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
+import Courses from "./Courses";
 
 interface SubtileProps {
   parent: string;
@@ -25,6 +26,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   const coursesTaken = tile.coursesTaken;
   const creditsNeeded = tile.creditsNeeded;
   const creditsTaken = tile.creditsTaken;
+  const courses = tile.courses;
   let showEndSection = true;
   if (creditsNeeded === -1 && coursesNeeded === -1) {
     showEndSection = false;
@@ -81,6 +83,11 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
           </Box>
           )}
         </HStack>
+        <Box>
+          {courses.map((course) => (
+            <Courses courses={course} />
+          ))}
+        </Box>
       </Card>
       </Box>
     );
@@ -107,6 +114,11 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
           </Box>
           )}
         </VStack>
+        <Box>
+          {courses.map((course) => (
+            <Courses courses={course} />
+          ))}
+        </Box>
       </Card>
       </Box>
     );
