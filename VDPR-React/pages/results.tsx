@@ -56,9 +56,6 @@ interface ResultCard {
   const rArrow = isMobile ? null : RightArrow;
   const lArrow = isMobile ? null : LeftArrow;
 
-  console.log('apiData:', apiData);
-  console.log('tiles:', apiData?.tiles);
-
   return (
   <Box textAlign="center" mb={200}>
       <VStack spacing={3}>

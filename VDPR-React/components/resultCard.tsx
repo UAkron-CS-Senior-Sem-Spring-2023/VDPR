@@ -85,7 +85,7 @@ export const ResultCard = ({ title, description, subtiles, handleClick }: Result
         <CardBody>
           <Heading fontSize='22px'>{title}</Heading>
           <br />
-          <Text fontSize='14px'>{description}</Text>
+          <Text fontSize='14px' maxH="200px" overflow="auto">{description}</Text>
           {progressValue > 0 && (<Heading fontSize='18px' mt={3}>Requirement Completion:</Heading>)}
           {progressValue > 0 && (
             <CircularProgress mt={3} value={progressValue} thickness='7px' color='green.400' size='120px'>

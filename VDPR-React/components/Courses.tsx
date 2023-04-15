@@ -7,6 +7,7 @@ import {
   Icon,
   Card,
   HStack,
+  useColorModeValue,
 } from "@chakra-ui/react"
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
@@ -15,15 +16,7 @@ interface CoursesProps {
   courses: string;
 }
 
-function Courses({courses}: CoursesProps) {
-  // "catalogNum": "221",
-  // "courseType": "",
-  // "grade": "CR",
-  // "subject": "3450",
-  // "term": "Summe",
-  // "title": "Analytic Geometry-Calculus I",
-  // "units": 3,
-  // "year": "2019"
+function Courses({ courses }: CoursesProps) {
   const catalogNum = courses.catalogNum;
   const courseType = courses.courseType;
   const grade = courses.grade;
@@ -32,18 +25,19 @@ function Courses({courses}: CoursesProps) {
   const title = courses.title;
   const units = courses.units;
   const year = courses.year;
-
+  const textColor = useColorModeValue("gray.700", "gray.200");
+  
   return (
     <Box>
       <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <Text color={"gray.700"} >{catalogNum}</Text>
-        <Text color={"gray.700"} >{courseType}</Text>
-        <Text color={"gray.700"} >{grade}</Text>
-        <Text color={"gray.700"} >{subject}</Text>
-        <Text color={"gray.700"} >{term}</Text>
-        <Text color={"gray.700"} >{title}</Text>
-        <Text color={"gray.700"} >{units}</Text>
-        <Text color={"gray.700"} >{year}</Text>
+        <Text color={textColor} >{catalogNum}</Text>
+        <Text color={textColor} >{courseType}</Text>
+        <Text color={textColor} >{grade}</Text>
+        <Text color={textColor} >{subject}</Text>
+        <Text color={textColor} >{term}</Text>
+        <Text color={textColor} >{title}</Text>
+        <Text color={textColor} >{units}</Text>
+        <Text color={textColor} >{year}</Text>
       </Box>
     </Box>
   );

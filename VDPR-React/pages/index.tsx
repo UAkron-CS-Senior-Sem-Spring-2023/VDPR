@@ -19,7 +19,6 @@ const FileUpload = () => {
         // url: `${process.env.NEXT_PUBLIC_HEROKU_TASKS_URL}/${taskId}`,
         url: `http://localhost:3000/requirements`,
       });
-      console.log(res);
 
       // fetch api every five seconds until api responses with file
       if (res.data.status) {
@@ -28,7 +27,6 @@ const FileUpload = () => {
         }, 5000);
       } else {
         setLoading(false);
-        console.log(res.data)
         router.push({
             pathname: "/results",
             query: { results: JSON.stringify(res.data) },
