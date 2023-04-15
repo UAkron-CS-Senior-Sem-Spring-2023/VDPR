@@ -12,11 +12,12 @@ import { CheckIcon, CloseIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
 
 interface SubtileProps {
-  title: string;
-  description: string;
+  parent: string;
+  tile: string;
+  selected: boolean;
 }
 
-function SubtileCard({ parent, tile}: SubtileProps) {
+function SubtileCard({ parent, tile, selected }: SubtileProps) {
   let name = tile.name;
   let description = tile.otherRequirements;
   let satisfied = tile.satisfied;
@@ -59,6 +60,7 @@ function SubtileCard({ parent, tile}: SubtileProps) {
 
   if (!isMobile) {
     return (
+      <Box display={selected ? 'block' : 'none'}>
       <Card width={"full"} m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={"white"}>
         <HStack spacing={0} alignItems={"stretch-vertically"}>
           {showComplete && (
@@ -70,7 +72,7 @@ function SubtileCard({ parent, tile}: SubtileProps) {
             <Heading size="md" color={"gray.700"}> {name} </Heading>
           </Box>
           <Box flex={1}>
-            <Text color={"gray.700"}> {description} </Text>
+            <Text color={"gray.700"} maxH="200px" overflow="auto"> {description} </Text>
           </Box>
           {showEndSection && (
           <Box w={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"column"}>
@@ -80,9 +82,11 @@ function SubtileCard({ parent, tile}: SubtileProps) {
           )}
         </HStack>
       </Card>
+      </Box>
     );
   } else {
     return (
+      <Box display={selected ? 'block' : 'none'}>
       <Card width={"full"}  m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={"white"}>
         <VStack spacing={0} alignItems={"stretch-horizontally"}>
           {showComplete && (
@@ -104,6 +108,7 @@ function SubtileCard({ parent, tile}: SubtileProps) {
           )}
         </VStack>
       </Card>
+      </Box>
     );
   }
 } 

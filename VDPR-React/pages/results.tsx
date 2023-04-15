@@ -36,6 +36,8 @@ interface ResultCard {
   const queryKey = 'results';
   const apiData = JSON.parse(router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))) || {};
 
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+
   const [width, setWidth] = useState<number>(window.innerWidth);
 
   function handleWindowSizeChange() {
@@ -79,6 +81,7 @@ interface ResultCard {
               title={tile.name}
               description={tile.otherRequirements}
               subtiles={tile.subTiles}
+              handleClick={() => setSelectedCard(tile.name)}
             />
           ))}
         </Carousel>
@@ -92,6 +95,7 @@ interface ResultCard {
                 key={`subtile-${index}`}
                 parent={tile.name}
                 tile={subtile}
+                selected={selectedCard === tile.name}
               />
             ))}
           </Box>

@@ -20,9 +20,10 @@ interface ResultCardProps {
   title: string;
   description: string;
   subtiles?: Subtile[];
+  handleClick?: () => void;
 }
 
-export const ResultCard = ({ title, description, subtiles }: ResultCardProps) => {
+export const ResultCard = ({ title, description, subtiles, handleClick }: ResultCardProps) => {
   const selectedCardRef = React.useRef<HTMLDivElement | null>(null);
 
   const toggleCard = () => {
@@ -49,8 +50,7 @@ export const ResultCard = ({ title, description, subtiles }: ResultCardProps) =>
     (card?.firstChild as HTMLElement).style.border = '2px solid #3182ce';
     card?.classList.add('selected');
     selectedCardRef.current?.classList.add('selected');
-    // log the selected card's subtile array
-    console.log('subtiles:', subtiles);
+    handleClick && handleClick();
   };
 
   let progressValue = 0;
