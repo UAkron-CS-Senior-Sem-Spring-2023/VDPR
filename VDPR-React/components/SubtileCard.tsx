@@ -20,9 +20,10 @@ interface SubtileProps {
   parent: string;
   tile: string;
   selected: boolean;
+  isMobile: boolean;
 }
 
-function SubtileCard({ parent, tile, selected }: SubtileProps) {
+function SubtileCard({ parent, tile, selected, isMobile }: SubtileProps) {
   let name = tile.name;
   let description = tile.otherRequirements;
   let satisfied = tile.satisfied;
@@ -35,19 +36,6 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   if (creditsNeeded === -1 && coursesNeeded === -1 && !(courses && courses.length > 0) ) {
     showEndSection = false;
   }
-
-  const [width, setWidth] = useState<number>(window?.innerWidth);
-  function handleWindowSizeChange() {
-    setWidth(window?.innerWidth);
-  }
-  useEffect(() => {
-      window?.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window?.removeEventListener('resize', handleWindowSizeChange);
-      }
-  }, []);
-
-  const isMobile = width <= 768;
 
   let satisfiedColor = satisfied ? "green.300" : "red.400";
   let satisfiedIcon = satisfied ? <CheckIcon /> : <CloseIcon />;
@@ -193,7 +181,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   } else {
     return (
       <Box display={selected ? 'block' : 'none'}>
-      <Card width={"full"}  m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={"white"}>
+      <Card width={"full"}  m={2} borderRadius={10} borderWidth={1} borderColor={"gray.200"} backgroundColor={bgColor}>
         <VStack spacing={0} alignItems={"stretch-horizontally"}>
           {showComplete && (
           <Box backgroundColor={satisfiedColor} borderTopRadius={10} p={1} textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"row"}>
@@ -204,7 +192,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
             <Heading size="md" color={"gray.700"}> {name} </Heading>
           </Box>
           <Box>
-            <Text color={"gray.700"}> {description} </Text>
+            <Text color={textColor}> {description} </Text>
           </Box>
           {showEndSection && (
           <Box h={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"row"}>

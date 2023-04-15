@@ -12,6 +12,7 @@ import ResultCard from "../components/resultCard";
 import { Carousel } from '@trendyol-js/react-carousel';
 import { ChevronRightIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import { useEffect, useState } from "react";
+import debounce from "lodash.debounce";
 import SubtileCard from "@/components/SubtileCard";
 
 // right arrow react element
@@ -38,16 +39,19 @@ interface ResultCard {
 
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
-  const [width, setWidth] = useState<number>(window.innerWidth);
+  const [width, setWidth] = useState<number>(typeof window !== "undefined" ? window.innerWidth : 0);
 
-  function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
-  }
+  const handleWindowSizeChange = debounce(() => {
+    setWidth(typeof window !== "undefined" ? window.innerWidth : 0);
+  }, 65);
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
       window.addEventListener('resize', handleWindowSizeChange);
       return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
+        window.removeEventListener('resize', handleWindowSizeChange);
+      };
+    }
   }, []);
 
   const isMobile = width <= 768;
@@ -93,6 +97,7 @@ interface ResultCard {
                 parent={tile.name}
                 tile={subtile}
                 selected={selectedCard === tile.name}
+                isMobile={isMobile}
               />
             ))}
           </Box>
