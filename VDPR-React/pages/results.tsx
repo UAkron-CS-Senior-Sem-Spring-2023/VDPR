@@ -35,7 +35,7 @@ interface ResultCard {
  export const Results = () => {
   const router = useRouter();
   const queryKey = 'results';
-  const apiData = JSON.parse(router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))) || {};
+  let apiData = JSON.parse(router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))) || {};
 
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
@@ -60,51 +60,64 @@ interface ResultCard {
   const rArrow = isMobile ? null : RightArrow;
   const lArrow = isMobile ? null : LeftArrow;
 
-  return (
-  <Box textAlign="center" mb={200}>
-      <VStack spacing={3}>
-        <Heading>
-          Transcript Results
-        </Heading>
-        <Carousel 
-          show={show} 
-          slide={slide} 
-          transition={0.5} 
-          infinite={true} 
-          dynamic={true}
-          rightArrow={rArrow} 
-          leftArrow={lArrow}
-          swiping={true}
-        >
-        {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
-            <ResultCard
-              key={`tile-${index}`}
-              title={tile.name}
-              description={tile.otherRequirements}
-              subtiles={tile.subTiles}
-              handleClick={() => setSelectedCard(tile.name)}
-            />
-          ))}
-        </Carousel>
-        <Divider />
-        {/* Subtiles should render here */}
-        {/* the subTiles shown should only be those of the selected tile */}
-        {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
-          <Box key={`subtile-${index}`} width={"full"}>
-            {tile.subTiles && tile.subTiles.map((subtile: Subtile, index: number) => (
-              <SubtileCard
-                key={`subtile-${index}`}
-                parent={tile.name}
-                tile={subtile}
-                selected={selectedCard === tile.name}
-                isMobile={isMobile}
+  if (!apiData.tiles) {
+    return (
+      <Box textAlign="center" mb={200}>
+        <Text>
+          No data found to display. Try uploading your pdf again.
+        </Text>
+      </Box>
+    );
+  }
+  else {
+    return (
+    <Box textAlign="center" mb={200}>
+        <VStack spacing={3}>
+          <Heading>
+            Transcript Results
+          </Heading>
+          {apiData.tiles && (
+          <Carousel 
+            show={show} 
+            slide={slide} 
+            transition={0.5} 
+            infinite={true} 
+            dynamic={true}
+            rightArrow={rArrow} 
+            leftArrow={lArrow}
+            swiping={true}
+          >
+          {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
+              <ResultCard
+                key={`tile-${index}`}
+                title={tile.name}
+                description={tile.otherRequirements}
+                subtiles={tile.subTiles}
+                handleClick={() => setSelectedCard(tile.name)}
               />
             ))}
-          </Box>
-        ))}
-      </VStack>
-  </Box>
-  )
+          </Carousel>
+          )}
+          <Divider />
+          {/* Subtiles should render here */}
+          {/* the subTiles shown should only be those of the selected tile */}
+          {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
+            <Box key={`subtile-${index}`} width={"full"}>
+              {tile.subTiles && tile.subTiles.map((subtile: Subtile, index: number) => (
+                <SubtileCard
+                  key={`subtile-${index}`}
+                  parent={tile.name}
+                  tile={subtile}
+                  selected={selectedCard === tile.name}
+                  isMobile={isMobile}
+                />
+              ))}
+            </Box>
+          ))}
+        </VStack>
+    </Box>
+    )
+  }
 };
 
 export default Results;
