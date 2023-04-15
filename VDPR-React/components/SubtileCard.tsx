@@ -225,7 +225,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
           )}
         </VStack>
         <Collapse in={isOpen} unmountOnExit={true}>
-          <DataTable columns={courseColumns} data={courseData}  />
+          <DataTable columns={courseColumns} data={courseData} />
         </Collapse>
       </Card>
       </Box>
