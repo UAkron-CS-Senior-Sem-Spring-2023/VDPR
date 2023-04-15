@@ -13,7 +13,8 @@ import {
 } from "@chakra-ui/react"
 import { CheckIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { useState, useEffect } from "react";
-import Courses from "./Courses";
+import { createColumnHelper } from "@tanstack/react-table";
+import DataTable from "./DataTable";
 
 interface SubtileProps {
   parent: string;
@@ -35,14 +36,14 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
     showEndSection = false;
   }
 
-  const [width, setWidth] = useState<number>(window.innerWidth);
+  const [width, setWidth] = useState<number>(window?.innerWidth);
   function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
+    setWidth(window?.innerWidth);
   }
   useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
+      window?.addEventListener('resize', handleWindowSizeChange);
       return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
+          window?.removeEventListener('resize', handleWindowSizeChange);
       }
   }, []);
 
@@ -68,6 +69,128 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
   const bgHeaderColor = useColorModeValue("gray.200", "gray.200");
   const bgButtonColor = useColorModeValue("gray.200", "gray.200");
 
+// "catalogNum": "221",
+// "courseType": "",
+// "grade": "CR",
+// "subject": "3450",
+// "term": "Summe",
+// "title": "Analytic Geometry-Calculus I",
+// "units": 3,
+// "year": "2019"
+
+// make a data table for courses
+
+  interface Course {
+    catalogNum: string;
+    courseType: string;
+    grade: string;
+    subject: string;
+    term: string;
+    title: string;
+    units: number;
+    year: number;
+  }
+
+  const courseHelper = createColumnHelper<Course>();
+
+  const courseData = courses.map((course: any) => {
+    return {
+      catalogNum: course.catalogNum,
+      courseType: course.courseType,
+      grade: course.grade,
+      subject: course.subject,
+      term: course.term,
+      title: course.title,
+      units: course.units,
+      year: course.year,
+    }
+  });
+
+  const courseColumns = [
+    courseHelper.accessor("catalogNum", {
+      cell: (info) => info.getValue(),
+      header: "Catalog Number"
+    }),
+    courseHelper.accessor("courseType", {
+      cell: (info) => info.getValue(),
+      header: "Course Type"
+    }),
+    courseHelper.accessor("grade", {
+      cell: (info) => info.getValue(),
+      header: "Grade"
+    }),
+    courseHelper.accessor("subject", {
+      cell: (info) => info.getValue(),
+      header: "Subject"
+    }),
+    courseHelper.accessor("term", {
+      cell: (info) => info.getValue(),
+      header: "Term"
+    }),
+    courseHelper.accessor("title", {
+      cell: (info) => info.getValue(),
+      header: "Title"
+    }),
+    courseHelper.accessor("units", {
+      cell: (info) => info.getValue(),
+      header: "Units",
+      meta: {
+        isNumeric: true
+      }
+    }),
+    courseHelper.accessor("year", {
+      cell: (info) => info.getValue(),
+      header: "Year",
+      meta: {
+        isNumeric: true
+      }
+    }),
+  ];
+
+  type UnitConversion = {
+    fromUnit: string;
+    toUnit: string;
+    factor: number;
+  };
+  
+  const data: UnitConversion[] = [
+    {
+      fromUnit: "inches",
+      toUnit: "millimetres (mm)",
+      factor: 25.4
+    },
+    {
+      fromUnit: "feet",
+      toUnit: "centimetres (cm)",
+      factor: 30.48
+    },
+    {
+      fromUnit: "yards",
+      toUnit: "metres (m)",
+      factor: 0.91444
+    }
+  ];
+  
+  const columnHelper = createColumnHelper<UnitConversion>();
+  
+  const columns = [
+    columnHelper.accessor("fromUnit", {
+      cell: (info) => info.getValue(),
+      header: "To convert"
+    }),
+    columnHelper.accessor("toUnit", {
+      cell: (info) => info.getValue(),
+      header: "Into"
+    }),
+    columnHelper.accessor("factor", {
+      cell: (info) => info.getValue(),
+      header: "Multiply by",
+      meta: {
+        isNumeric: true
+      }
+    })
+  ];
+
   const [showData, setShowData] = useState(false);
   const { isOpen, onToggle } = useDisclosure();
   
@@ -88,8 +211,8 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
             <Text color={textColor} maxH="200px" overflow="auto"> {description} </Text>
           </Box>
           {showEndSection && (
-          <Box w={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} display={"flex"} flexDir={"column"}>
-            <Box flex={1} display="flex" flexDirection="column" justifyContent="center">
+          <Box w={"11.5%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} display={"flex"} flexDir={"column"}>
+            <Box flex={1} display="flex" flexDirection="column" justifyContent="center" minH="30px">
               {creditsNeeded != -1 && (
               <Heading color={"gray.700"} size={"sm"}> Credits: {creditsTaken}/{creditsNeeded} </Heading>
               )}
@@ -98,7 +221,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
               )}
             </Box>
               {( courses && courses.length > 0 ) && (
-              <Button onClick={onToggle} size="lg" bg={bgButtonColor} color="gray.900" _hover={{bg: "gray.300"}} borderBottomRightRadius={"10px"} flex={1} maxH="30px" w="100%">
+              <Button onClick={onToggle} size="lg" bg={bgButtonColor} color="gray.900" _hover={{bg: "gray.300"}} borderBottomRightRadius={"10px"} flex={1} minH="30px" w="100%">
                 <Icon as={ChevronDownIcon} />
               </Button>
               )}
@@ -106,11 +229,7 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
           )}
         </HStack>
         <Collapse in={isOpen} unmountOnExit={true}>
-        <Box>
-          {courses.map((course) => (
-            <Courses courses={course} />
-          ))}
-        </Box>
+          <DataTable columns={courseColumns} data={courseData} />
         </Collapse>
       </Card>
       </Box>
@@ -133,16 +252,25 @@ function SubtileCard({ parent, tile, selected }: SubtileProps) {
           </Box>
           {showEndSection && (
           <Box h={"11%"} backgroundColor={"gray.200"} borderRightRadius={10} ml="auto" textAlign={"center"} justifyContent={"center"} display={"flex"} flexDir={"row"}>
-            {creditsNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Credits: {creditsTaken}/{creditsNeeded} </Heading>)}
-            {coursesNeeded != -1 && (<Heading color={"gray.700"} size={"sm"}> Courses: {coursesTaken}/{coursesNeeded} </Heading>)}
+            <Box flex={1} display="flex" flexDirection="column" justifyContent="center" minH="30px">
+              {creditsNeeded != -1 && (
+              <Heading color={"gray.700"} size={"sm"}> Credits: {creditsTaken}/{creditsNeeded} </Heading>
+              )}
+              {coursesNeeded != -1 && (
+              <Heading color={"gray.700"} size={"sm"}> Courses: {coursesTaken}/{coursesNeeded} </Heading>
+              )}
+            </Box>
+              {( courses && courses.length > 0 ) && (
+              <Button onClick={onToggle} size="lg" bg={bgButtonColor} color="gray.900" _hover={{bg: "gray.300"}} borderBottomRightRadius={"10px"} flex={1} minH="30px" w="100%">
+                <Icon as={ChevronDownIcon} />
+              </Button>
+              )}
           </Box>
           )}
         </VStack>
-        <Box>
-          {courses.map((course) => (
-            <Courses courses={course} />
-          ))}
-        </Box>
+        <Collapse in={isOpen} unmountOnExit={true}>
+          <DataTable columns={courseColumns} data={courseData}  />
+        </Collapse>
       </Card>
       </Box>
     );
