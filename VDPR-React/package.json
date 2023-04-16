@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.5.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@saas-ui/stepper": "^1.4.0",
     "@tanstack/react-table": "^8.8.5",
     "@trendyol-js/react-carousel": "^3.0.2",
     "@types/node": "18.15.3",
