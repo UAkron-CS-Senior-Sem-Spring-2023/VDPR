@@ -26,26 +26,50 @@ let LeftArrow = (
   <ChevronLeftIcon w={20} h={200} />
 );
 
+interface Subtile {
+  name: string;
+  otherRequirements: string;
+  satisfied: boolean;
+  coursesNeeded: number;
+  coursesTaken: number;
+  creditsNeeded: number;
+  creditsTaken: number;
+  courses: any[];
+}
+
 interface ResultCard {
   title: string;
   description: string;
   subtiles?: Subtile[];
+  name: any;
+  otherRequirements: string;
+  subTiles?: Subtile[];
 }
 
  export const Results = () => {
   const router = useRouter();
   const queryKey = 'results';
-  let apiData = JSON.parse(router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`))) || {};
-
+  const apiData = (() => {
+    const query = router.query[queryKey] || router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`));
+    if (!query) return {};
+    if (typeof query === 'string') {
+      return JSON.parse(query);
+    }
+    if (Array.isArray(query)) {
+      return JSON.parse(query[0]);
+    }
+    return {};
+  })();
+  
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const [width, setWidth] = useState<number>(typeof window !== "undefined" ? window.innerWidth : 0);
 
-  const handleWindowSizeChange = debounce(() => {
-    setWidth(typeof window !== "undefined" ? window.innerWidth : 0);
-  }, 65);
-
   useEffect(() => {
+    const handleWindowSizeChange = debounce(() => {
+      setWidth(typeof window !== "undefined" ? window.innerWidth : 0);
+    }, 65);
+
     if (typeof window !== "undefined") {
       window.addEventListener('resize', handleWindowSizeChange);
       return () => {

@@ -14,12 +14,13 @@ import SubtileCard from "./SubtileCard";
 interface Subtile {
   title: string;
   description: string;
+  satisfied: boolean;
 }
 
 interface ResultCardProps {
   title: string;
   description: string;
-  subtiles?: Subtile[];
+  subtiles?: any[];
   handleClick?: () => void;
 }
 

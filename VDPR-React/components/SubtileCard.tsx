@@ -16,9 +16,20 @@ import { useState, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import DataTable from "./DataTable";
 
+interface tile {
+  name: string;
+  otherRequirements: string;
+  satisfied: boolean;
+  coursesNeeded: number;
+  coursesTaken: number;
+  creditsNeeded: number;
+  creditsTaken: number;
+  courses: any[];
+}
+
 interface SubtileProps {
   parent: string;
-  tile: string;
+  tile: tile;
   selected: boolean;
   isMobile: boolean;
 }
@@ -75,7 +86,7 @@ function SubtileCard({ parent, tile, selected, isMobile }: SubtileProps) {
 
   interface Course {
     catalogNum: string;
-    courseType: string;
+    courseType?: string;
     grade: string;
     subject: string;
     term: string;
