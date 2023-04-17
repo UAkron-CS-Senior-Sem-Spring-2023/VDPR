@@ -31,7 +31,7 @@ const FileUpload = () => {
         // this method should be get because we will use it to fetch the file every 5 seconds until the file is ready
         method: "GET",
         // url: `${process.env.NEXT_PUBLIC_HEROKU_TASKS_URL}/${taskId}`,
-        url: `http://localhost:3000/requirements`,
+        url: `http://localhost:3000/parse`,
       });
 
       // fetch api every five seconds until api responses with file
