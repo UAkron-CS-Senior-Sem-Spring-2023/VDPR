@@ -1,28 +1,48 @@
 import Course
 import Student
+import Tile
+import SubTile
+import json
 
 from PyPDF2 import PdfReader
 
+validGrades = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "I", 
+	       			"IP", "AUD", "CR", "CRX", "NC", "WD", "NGR", "INV", "PI", "R", "TA", "TA-", 
+							"TB+", "TB", "TB-", "TC+", "TC", "TC-", "TD+", "TD", "TD-", "TF", "TI", "TIP", 
+							"TAUD", "TCR", "TCRX", "TNC", "TWD", "TNGR", "TINV", "TPI", "TR"]
 class PDFParser:
 	def __init__(self):
 		self.student = Student.Student()
+		self.tiles = []
 
 	def parseInfo(self, path):
 		reader = PdfReader(path)
 		text = ""
 		for page in reader.pages:
 			text += page.extract_text() + "\n"
+		#print for testing
+		###########################
+		# file_object  = open("output.txt", "w+")
+		# file_object.write(text)
+		###########################
 		lines = text.splitlines()
 		for line in range (len(lines)):
 			lines[line] = lines[line].split()
 		self.parseStudentInfo(lines)
 		self.parseCoursesTaken(lines)
+		self.parseTiles(lines)
 		
 	def parseStudentInfo(self, lines):
-		yearline = lines[6]
+		for line in range(len(lines)):
+			if "Term" in lines[line]:
+				yearline = lines[line + 1]
+				break
 		self.student.yearJoined = int(yearline[2])
 		self.student.termJoined = yearline[3].strip()
-		majorline = lines[8]
+		for line in range(len(lines)):
+			if "Important" in lines[line]:
+				majorline = lines[line - 2]
+				break
 		for i in range(len(majorline) - 5):
 			self.student.major += majorline[i] + " "
 		self.student.major = self.student.major.strip()
@@ -42,6 +62,13 @@ class PDFParser:
 			for word in range(length - 7):
 				courseToAdd.title += courseLines[line][4 + word] + " "
 			courseToAdd.title = courseToAdd.title.strip()
+			if (courseToAdd.grade not in validGrades):
+				courseToAdd.title += " " + courseToAdd.grade
+				courseToAdd.grade = "IP"
+			if (courseToAdd.term == "Summe"):
+				courseToAdd.term += "r"
+			elif (courseToAdd.term == "Sprin"):
+				courseToAdd.term += "g"
 			self.student.coursesTaken.append(courseToAdd)
 
 	def getCourseLines(self, lines):
@@ -76,8 +103,122 @@ class PDFParser:
 				length -= 1
 		return lines
 
+	def parseTiles(self, lines):
+		currTile = None
+		subTile = None
+		lines = list(filter(None, lines))
+		for line in range (len(lines)):
+			if self.inLine("(RG", lines[line]):
+				if currTile != None:
+					self.tiles.append(currTile)
+				currTile = Tile.Tile()
+				for word in range(len(lines[line])):
+					currTile.name = currTile.name + " " + lines[line][word]
+					currTile.name = currTile.name.strip()
+				line += 1
+				while not self.inLine("(RQ", lines[line]):
+					if ("Satisfied:" in lines[line]):
+						satIndex = lines[line].index("Satisfied:")
+						if(satIndex > 0 and lines[line][satIndex - 1] == "Not"):
+							currTile.satisfied = False
+						else:
+							currTile.satisfied = True
+						for word in range(satIndex + 1, len(lines[line])):
+							currTile.otherRequirements = currTile.otherRequirements + " " + lines[line][word]
+							currTile.otherRequirements = currTile.otherRequirements.strip()
+					elif ("Units:" in lines[line]):
+						if ("required," in lines[line]):
+							currTile.creditsNeeded = float(lines[line][lines[line].index("required,") - 1])
+						if ("used," in lines[line]):
+							currTile.creditsTaken = float(lines[line][lines[line].index("used,") - 1])
+						if ("used" in lines[line]):
+							currTile.creditsTaken = float(lines[line][lines[line].index("used") - 1])
+					else:
+						for word in range(len(lines[line])):
+							currTile.otherRequirements = currTile.otherRequirements + " " + lines[line][word]
+							currTile.otherRequirements = currTile.otherRequirements.strip()
+					line += 1
+			elif self.inLine("(RQ", lines[line]):
+				subTile = SubTile.SubTile()
+				for word in range(len(lines[line])):
+					subTile.name = subTile.name + " " + lines[line][word]
+					subTile.name = subTile.name.strip()
+				line += 1
+				while (not self.inLine("(RQ", lines[line])) and (not self.inLine("(RG", lines[line])) and lines[line][len(lines[line]) - 1] != "History":
+					if ("Satisfied:" in lines[line]):
+						satIndex = lines[line].index("Satisfied:")
+						if("Not" in lines[line]):
+							subTile.satisfied = False
+						else:
+							subTile.satisfied = True
+						for word in range(satIndex + 1, len(lines[line])):
+							subTile.otherRequirements = subTile.otherRequirements + " " + lines[line][word]
+							subTile.otherRequirements = subTile.otherRequirements.strip()
+					elif ("Units:" in lines[line]):
+						if ("required," in lines[line]):
+							subTile.creditsNeeded = float(lines[line][lines[line].index("required,") - 1])
+						if ("used" in lines[line]):
+							subTile.creditsTaken = float(lines[line][lines[line].index("used") - 1])
+						if ("used," in lines[line]):
+							subTile.creditsTaken = float(lines[line][lines[line].index("used,") - 1])
+					elif ("Courses:" in lines[line]):
+						if ("required," in lines[line]):
+							subTile.coursesNeeded = float(lines[line][lines[line].index("required,") - 1])
+						if ("used" in lines[line]):
+							subTile.coursesTaken = float(lines[line][lines[line].index("used") - 1])
+						if ("used," in lines[line]):
+							subTile.coursesTaken = float(lines[line][lines[line].index("used,") - 1])
+					elif (lines[line][0] == "Courses" and lines[line][1] == "Used"):
+						line += 1
+						while (not self.inLine("(RQ", lines[line])) and (not self.inLine("(RG", lines[line])) and lines[line][len(lines[line]) - 1] != "History" and lines[line][len(lines[line]) - 1] != "Available":
+							if(lines[line][0][0:2] == "20"):
+								newCourse = Course.Course()
+								newCourse.year = lines[line][0]
+								newCourse.term = lines[line][1]
+								newCourse.subject = lines[line][2]
+								newCourse.catalogNum = lines[line][3]
+								newCourse.grade = lines[line][len(lines[line]) - 2]
+								newCourse.units = float(lines[line][len(lines[line]) - 1])
+								for word in range(4, len(lines[line]) - 2):
+									newCourse.title = newCourse.title + " " + lines[line][word]
+									newCourse.title = newCourse.title.strip()
+								if (newCourse.grade not in validGrades):
+									newCourse.title += " " + newCourse.grade
+									newCourse.grade = "IP"
+								if (newCourse.term == "Summe"):
+									newCourse.term += "r"
+								elif (newCourse.term == "Sprin"):
+									newCourse.term += "g"
+								subTile.courses.append(newCourse)
+							line += 1
+						if (self.inLine("(RQ", lines[line]) or self.inLine("(RG", lines[line])):
+							line = line -1
+					else:
+						for word in range(len(lines[line])):
+							subTile.otherRequirements = subTile.otherRequirements + " " + lines[line][word]
+							subTile.otherRequirements = subTile.otherRequirements.strip()
+					line += 1
+					if(line > len(lines) - 1):
+						break
+				currTile.subTiles.append(subTile)
+		self.tiles.append(currTile)
 
-
-
-
+	def inLine(self, value, line):
+		for word in range(len(line)):
+			if (value in line[word]):
+				return True
 			
+	def toJSON(self):
+		return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+#for testing
+def main():
+	test = PDFParser()
+	test.parseInfo("jacobDPR.pdf")
+	f = open("output.txt", "w")
+	for tile in range(len(test.tiles)):
+		f.write(str(test.tiles[tile]))
+	f.close()
+
+if __name__ == '__main__':
+	main() 

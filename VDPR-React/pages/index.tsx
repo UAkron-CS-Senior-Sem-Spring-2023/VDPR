@@ -1,10 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
+import { 
+  Box, 
+  Button, 
+  Heading, 
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 import axios from "axios";
 
 import Dropzone from "../components/Dropzone";
 import ErrorAlert from "../components/ErrorAlert";
 import router from "next/router";
+import PDFStepper from "../components/PDFStepper";
 
 const FileUpload = () => {
   const [taskId, setTaskId] = useState<string | null>(null);
@@ -19,7 +33,6 @@ const FileUpload = () => {
         // url: `${process.env.NEXT_PUBLIC_HEROKU_TASKS_URL}/${taskId}`,
         url: `http://localhost:3000/requirements`,
       });
-      console.log(res);
 
       // fetch api every five seconds until api responses with file
       if (res.data.status) {
@@ -46,16 +59,31 @@ const FileUpload = () => {
       getStatus(taskId);
     }
   }, [taskId, getStatus]);
-
+  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
-    <Box mb={8} w="full">
+    <Box m="0 auto" maxW={700} transition="0.5s ease-out">
       <Box mb={8}>
         <Box flexDirection="row" mb={2}>
           <Heading mr={2} fontSize="2xl" display="inline-block">
             You will need your transcript to get started:{" "}
-            <Button colorScheme={"teal"}>
+            <Button colorScheme={"teal"} onClick={onOpen} marginLeft={3}>
               Learn How
             </Button>
+            <Modal isOpen={isOpen} onClose={onClose} size="lg">
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Modal Title</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <PDFStepper />
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme='teal' mr={3} onClick={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </Heading>
         </Box>
       </Box>

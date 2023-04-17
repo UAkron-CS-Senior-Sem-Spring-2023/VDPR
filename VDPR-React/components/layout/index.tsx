@@ -11,11 +11,11 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Box m="0 auto" maxW={800} transition="0.5s ease-out">
+    <Box m="0 auto" maxW={1000} transition="0.5s ease-out">
       <Meta />
       <Box m={8}>
         <Header />
-        <Box as="main" my={22}>
+        <Box as="main" my={30}>
           {children}
         </Box>
         <Footer />
