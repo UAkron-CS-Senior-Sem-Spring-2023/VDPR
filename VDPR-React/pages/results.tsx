@@ -46,7 +46,7 @@ interface ResultCard {
   subTiles?: Subtile[];
 }
 
- export const Results = () => {
+export const Results = () => {
   const router = useRouter();
   const queryKey = 'results';
   const apiData = (() => {
@@ -60,7 +60,7 @@ interface ResultCard {
     }
     return {};
   })();
-  
+
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const [width, setWidth] = useState<number>(typeof window !== "undefined" ? window.innerWidth : 0);
@@ -94,33 +94,60 @@ interface ResultCard {
     );
   }
   else {
+    let gradeMapping: { [index: string]: any } = {
+      "A": 4,
+      "A-": 3.7,
+      "B+": 3.3,
+      "B": 3,
+      "B-": 2.7,
+      "C+": 2.3,
+      "C": 2,
+      "C-": 1.7,
+      "D+": 1.3,
+      "D": 1,
+      "D-": 0.7,
+      "F": 0
+    };
+
+    let gradePoints = 0;
+    let totalCredits = 0;
+    for (const course of apiData.student.coursesTaken) {
+      if (course.grade in gradeMapping) {
+
+        gradePoints += gradeMapping[course.grade] * course.units;
+        totalCredits += 1 * course.units;
+      }
+    }
+    const gpa = gradePoints / totalCredits;
+
     return (
-    <Box textAlign="center" mb={200}>
+      <Box textAlign="center" mb={200}>
         <VStack spacing={3}>
           <Heading>
             Transcript Results
           </Heading>
+          <Heading size={"md"}> GPA: {gpa.toFixed(4)}</Heading>
           {apiData.tiles && (
-          <Carousel 
-            show={show} 
-            slide={slide} 
-            transition={0.5} 
-            infinite={true} 
-            dynamic={true}
-            rightArrow={rArrow} 
-            leftArrow={lArrow}
-            swiping={true}
-          >
-          {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
-              <ResultCard
-                key={`tile-${index}`}
-                title={tile.name}
-                description={tile.otherRequirements}
-                subtiles={tile.subTiles}
-                handleClick={() => setSelectedCard(tile.name)}
-              />
-            ))}
-          </Carousel>
+            <Carousel
+              show={show}
+              slide={slide}
+              transition={0.5}
+              infinite={true}
+              dynamic={true}
+              rightArrow={rArrow}
+              leftArrow={lArrow}
+              swiping={true}
+            >
+              {apiData.tiles && apiData.tiles.map((tile: ResultCard, index: number) => (
+                <ResultCard
+                  key={`tile-${index}`}
+                  title={tile.name}
+                  description={tile.otherRequirements}
+                  subtiles={tile.subTiles}
+                  handleClick={() => setSelectedCard(tile.name)}
+                />
+              ))}
+            </Carousel>
           )}
           <Divider />
           {/* Subtiles should render here */}
@@ -139,7 +166,7 @@ interface ResultCard {
             </Box>
           ))}
         </VStack>
-    </Box>
+      </Box>
     )
   }
 };
