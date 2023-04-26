@@ -35,11 +35,6 @@ export default function Dropzone({
           unstable_batchedUpdates(async () => {
             setTaskId(res.data.task_id);
             setLoading(true);
-
-            router.push({
-              pathname: "/results",
-              query: { results: JSON.stringify(res.data) },
-          }, '/results')
           });
         })
         .catch((err) => {
